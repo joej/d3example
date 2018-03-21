@@ -21,7 +21,6 @@
         padding: 0px;
     }
 
-    .lightbg { background-color: #f0ffff; }
 
     #svg { width: auto; height: auto; }
 
@@ -54,9 +53,8 @@
 <body>
 
 <div id="div-container-fluid" class="container-fluid">
-    <div class="row content">
+        <div class="row content">
 
-        <!-- COL 2 -->
         <div class="col-sm-2 sidenav">
             <h4>Diagram</h4>
             <ul class="nav">
@@ -68,12 +66,12 @@
             <br>
         </div>
 
-        <!-- COL 10 -->
         <div id="col-sm-10" class="col-sm-10">
             <h2>Diagram</h2>
 
-            <!-- d3 will draw on this  -->
-            <svg id="svg" height=300 width=300></svg>
+            <svg id="svg"> <!-- height=300 width=300></svg> -->
+
+            <!-- NO BOOTSTRAP ROWS .............................................  
 
             <div id="row" class="row">
                 <div class="col-sm-2"><img id="sat"  src="assets/icons/sat.png"></div>
@@ -128,10 +126,10 @@
                 <div class="col-sm-2"> &nbsp; </div>
             </div>
 
-        </div> <!-- col-sm-10 -->
-
-    </div><!-- row content -->
-</div>
+        ... NO BOOTSTRAP ROWS ..............................................  -->
+        </div> 
+    </div> <!-- row -->
+</div> <!-- container -->
 
 <footer class="container-fluid">
   <p>Footer Text</p>
@@ -140,14 +138,16 @@
 </body>
 <script type="text/javascript">
 
+
     <!-- from http://jsfiddle.net/m1erickson/86f4C/ -->
     var svg = d3.select("svg#svg")
         .attr("width", $("#col-sm-10").width() )            // -- fit to the bootstrap col width
-        .attr("height", $("#col-sm-10").height() )          // -- fit to the bootstrap col height
+        //.attr("height", $("#col-sm-10").height() )          // -- fit to the bootstrap col height
+        .attr("height", "500px")
         .attr("top", $("#col-sm-10").top )                  // -- locate at 0,0 of bootstrap col
         .attr("left", $("#col-sm-10").left )                // -- locate at 0,0 of bootstrap col
-        .style("background-color", "#ccc")
-        .style("border", "1px solid red")
+        //.style("background-color", "ivory")
+        //.style("border", "1px solid red")
         .style("position", "absolute");
 
     //console.log("col-sm-10 =" + $("#col-sm-10").width() + " - " + $("#col-sm-10").height() );
@@ -172,11 +172,6 @@
     //console.log("svg.width = " + $svg.width() + ", height " + $svg.height() );
     //console.log("\nsvgOffset left = " + svgOffset.left  + ", top: " + svgOffset.top );
 
-    var $1 = $("#sat");
-    var $2 = $("#gep");
-    var $0r = $("#pentagon");
-    var $2r = $("#ssbn");
-
     // - build array of "lines"
     var connectors = [];
 
@@ -188,22 +183,115 @@
     connectors.push({ from: $("#gep"), to: $("#tacamo") });
     connectors.push({ from: $("#pentagon"), to: $("#whitehouse") });
 
+    var nodeData = [
+          {
+            "name": "tacamo",
+            "system": "tacamo",
+            "img": "assets/icons/tacamo.png",
+            "width": 214,
+            "height": 64,
+            "midx": 777,
+            "midy": 95
+          },
+          {
+            "name": "ssbn",
+            "system": "ssbn",
+            "img": "assets/icons/ssbn.png",
+            "width": 181,
+            "height": 64,
+            "midx": 1208,
+            "midy": 270
+          },
+          {
+            "name": "ssbn2",
+            "system": "ssbn",
+            "img": "assets/icons/ssbn.png",
+            "width": 181,
+            "height": 64,
+            "midx": 1208,
+            "midy": 430
+          },
+          {
+            "name": "gep",
+            "system": "gep",
+            "width": 92,
+            "height": 96,
+            "img": "assets/icons/gep.png",
+            "midx": 45,
+            "midy": 350
+          },
+          {
+            "name": "sat",
+            "system": "sbirs",
+            "img": "assets/icons/sat.png",
+            "width": 95,
+            "height": 64,
+            "midx": 47,
+            "midy": 31
+          },
+          {
+            "name": "pentagon",
+            "system": "nmcc",
+            "img": "assets/icons/nmcc_pentagon.png",
+            "width": 111,
+            "height": 64,
+            "midx": 502,
+            "midy": 430
+          },
+          {
+            "name": "whitehouse",
+            "system": "cjcsan",
+            "width": 99,
+            "height": 64,
+            "img": "assets/icons/whitehouse.png",
+            "midx": 720,
+            "midy": 494
+          }
+    ]
+    // nodeData
+
+
+
+    var DUMPNODES = false;
+    if  (DUMPNODES) {
+        // -- build node list
+        nodeData = [];
+        nodeArr = [ 'tacamo', 'ssbn', 'ssbn2', 'gep', 'sat', 'pentagon', 'whitehouse' ];
+        for (var nm in nodeArr) {
+            idstring = "#" + nodeArr[nm];
+            obj = $(idstring);
+            nodeData.push( {
+                'name':     nodeArr[nm],
+                //'realleft': obj.offset().left - offsetX,
+                //'realtop':  obj.offset().top - offsetY,
+                'midx':     obj.offset().left - offsetX + (obj.width() / 2),
+                'midy':     obj.offset().top  - offsetY + (obj.height() / 2)
+            });
+        }
+        console.log( JSON.stringify( nodeData, null, 2 ) );
+    } // DUMPNODES
+
+    var OLDLINES = false;
+    if (OLDLINES) {
     lineData = [];
-    for (var i in connectors)  {
-        console.log("i = " + i );
-        c = connectors[i];
-        lineData.push({ 
-            x1: c.from.offset().left - offsetX + (c.from.width() / 2), 
-            y1: c.from.offset().top  - offsetY + (c.from.height() / 2), 
-            x2: c.to.offset().left - offsetX +  (c.to.width() / 2), 
-            y2: c.to.offset().top  - offsetY + (c.to.height() / 2)
-        });
+        for (var i in connectors)  {
+            //console.log("i = " + i );
+            c = connectors[i];
+            lineData.push({ 
+                x1: c.from.offset().left - offsetX + (c.from.width() / 2), 
+                y1: c.from.offset().top  - offsetY + (c.from.height() / 2), 
+                x2: c.to.offset().left - offsetX +  (c.to.width() / 2), 
+                y2: c.to.offset().top  - offsetY + (c.to.height() / 2)
+            });
+        }
+        //console.log( lineData);
+        //console.log( JSON.stringify(lineData) );
+
+        // - draw the lines
+        //connect();
     }
 
-    // - draw the lines
-    //connect();
-
-    $(".draggable").draggable();
+    //$(".draggable").draggable();
     //$(".draggable").draggable({
     //    // event handlers
     //    start: noop,
@@ -213,11 +301,42 @@
 
     function noop() {}
 
+    function draw_nodes() {
+        // - draw icon/image nodes on the svg, based on nodeData data
+
+        var DRAWIMAGES = true;
+        var DRAWCIRCLES = false;
+        //var URL_PREPEND = "http://toast.mitre.org/~judge/d3example/";
+        for (i in nodeData) {
+            //console.log( "place: " + JSON.stringify(nodeData[i]) );
+
+            obj = nodeData[i]
+            if (DRAWIMAGES) {
+                svg.append("image")
+                    .attr("xlink:href", obj.img)
+                    .attr("x", obj.midx - (obj.width/2))
+                    .attr("y", obj.midy - (obj.height/2))
+                    .attr("class", obj.system)
+                    .attr("id", obj.name);
+                svg.append("text").attr("dx", obj.midx).attr("dy", obj.midy+obj.height).text( obj.name);
+            }
+
+            if (DRAWCIRCLES) {
+                svg.append("circle")
+                    .attr("cx", obj.midx )
+                    .attr("cy", obj.midy  )
+                    .attr("r", 25)
+                    .style("fill", "blue");
+            }
+        }
+    }
+
+
     function connect() {
         //ctx.clearRect(0, 0, svg.width, svg.height);
         //$svg.selectAll("*?).remove();
 
-        console.log("connectors:");
+        //console.log("connectors:");
         for (var i = 0; i < connectors.length; i++) {
             var c = connectors[i];
             var eFrom = c.from;
@@ -254,7 +373,7 @@
 
     // ---------------------------------------------------- document ready function
     $( document ).ready(function() {
-        console.log( "ready!" );
+        console.log("\nready!" );
 
 
         // - enable actions
@@ -278,8 +397,16 @@
 
         });
 
+        // - draw the nodes
+        draw_nodes();
+        console.log("image count: " + svg.selectAll("image").size() );
+        console.log("sat image count: " + svg.selectAll("image#sat").size() );
+        console.log("cjcsan image count: " + svg.selectAll("image.cjcsan").size() );
+
+
         // - draw the lines 
-        connect();
+        //connect();
+
 
     });
 
