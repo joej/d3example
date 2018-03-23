@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+n<html lang="en">
+<head>
+    <title>Example 4</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/jquery-ui.css">
+
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/d3.js"></script>
+
+    <!-- pull in node data -->
+    <script src="d3data.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="example.css">
+</head>
+<body>
+
+<div id="div-container-fluid" class="container-fluid">
+        <div class="row content">
+
+        <div class="col-sm-2 sidenav">
+            <h4>Menu</h4>
+            <ul class="nav">
+                <li class="#"><a data-ma-action="clear-all-lines" href="#">Clear Lines</a></li>
+                <li class="#"><a data-ma-action="draw-all-lines" href="#">Draw  Lines</a></li>
+                <li><a href="#">C</a></li>
+                <li><a href="#">D</a></li>
+            </ul>
+            <br>
+        </div>
+
+        <div id="maincontent" class="row">
+            <h2>Diagram</h2>
+            <svg id="svg" height="500px" width="300px"> <!-- height=300 width=300></svg> -->
+        </div> 
+    </div> <!-- row -->
+</div> <!-- container -->
+
+<footer class="container-fluid">
+  <p>Footer Text</p>
+</footer>
+</body>
+
+
+<script type="text/javascript">
+
+
+    <!-- from http://jsfiddle.net/m1erickson/86f4C/ -->
+    var svg = d3.select("svg#svg")
+        //.attr("height", $("#maincontent").height() )          // -- fit to the bootstrap col height
+        .attr("height", "600px")
+        .attr("width", $("#maincontent").width() )            // -- fit to the bootstrap col width
+        .attr("top", $("#maincontent").top )                  // -- locate at 0,0 of bootstrap col
+        .attr("left", $("#maincontent").left )                // -- locate at 0,0 of bootstrap col
+        .style("background-color", "lightsteelblue")
+        //.style("border", "1px solid red")
+        .style("position", "absolute");
+
+
+    var ctx = svg;
+
+    ctx.lineWidth = 3;
+
+    var $svg = $("#svg");
+    var svgOffset = $svg.offset();
+    var offsetX = svgOffset.left;
+    var offsetY = svgOffset.top;
+
+
+    var nodeData = [
+          {
+            "name": "tacamo",
+            "system": "tacamo",
+            "img": "assets/icons/tacamo.png",
+            "width": 214,
+            "height": 64,
+            "midx": 777,
+            "midy": 95
+          },
+          {
+            "name": "ssbn",
+            "system": "ssbn",
+            "img": "assets/icons/ssbn.png",
+            "width": 181,
+            "height": 64,
+            "midx": 1208,
+            "midy": 270
+          },
+          {
+            "name": "ssbn2",
+            "system": "ssbn",
+            "img": "assets/icons/ssbn.png",
+            "width": 181,
+            "height": 64,
+            "midx": 1208,
+            "midy": 430
+          },
+          {
+            "name": "gep",
+            "system": "gep",
+            "width": 92,
+            "height": 96,
+            "img": "assets/icons/gep.png",
+            "midx": 45,
+            "midy": 350
+          },
+          {
+            "name": "sat",
+            "system": "sbirs",
+            "img": "assets/icons/sat.png",
+            "width": 95,
+            "height": 64,
+            "midx": 47,
+            "midy": 31
+          },
+          {
+            "name": "pentagon",
+            "system": "nmcc",
+            "img": "assets/icons/nmcc_pentagon.png",
+            "width": 111,
+            "height": 64,
+            "midx": 502,
+            "midy": 430
+          },
+          {
+            "name": "whitehouse",
+            "system": "cjcsan",
+            "width": 99,
+            "height": 64,
+            "img": "assets/icons/whitehouse.png",
+            "midx": 720,
+            "midy": 494
+          }
+    ]
+    // nodeData
+
+
+
+    var OLDLINES = false;
+    if (OLDLINES) {
+    lineData = [];
+        for (var i in connectors)  {
+            //console.log("i = " + i );
+            c = connectors[i];
+            lineData.push({ 
+                x1: c.from.offset().left - offsetX + (c.from.width() / 2), 
+                y1: c.from.offset().top  - offsetY + (c.from.height() / 2), 
+                x2: c.to.offset().left - offsetX +  (c.to.width() / 2), 
+                y2: c.to.offset().top  - offsetY + (c.to.height() / 2)
+            });
+        }
+        //console.log( lineData);
+        //console.log( JSON.stringify(lineData) );
+
+        // - draw the lines
+        //connect();
+    }
+
+    //$(".draggable").draggable();
+    //$(".draggable").draggable({
+    //    // event handlers
+    //    start: noop,
+    //    drag: connect,
+    //    stop: noop
+    //});
+
+    function noop() {}
+
+    function draw_nodes() {
+        // - draw icon/image nodes on the svg, based on nodeData data
+
+        var DRAWIMAGES = true;
+        var DRAWCIRCLES = false;
+
+        for (i in nodeData) {
+            //console.log( "place: " + JSON.stringify(nodeData[i]) );
+
+            obj = nodeData[i]
+            if (DRAWIMAGES) {
+                svg.append("image")
+                    .attr("xlink:href", obj.img)
+                    .attr("x", obj.midx - (obj.width/2))
+                    .attr("y", obj.midy - (obj.height/2))
+                    .attr("class", obj.system)
+                    .attr("id", obj.name);
+                svg.append("text")
+                    .attr("dx", obj.midx)
+                    .attr("dy", obj.midy+obj.height)
+                    .text(obj.name)
+                    .style("text-anchor", "middle");
+
+            }
+            if (DRAWCIRCLES) {
+                svg.append("circle")
+                    .attr("cx", obj.midx )
+                    .attr("cy", obj.midy  )
+                    .attr("r", 25)
+                    .style("fill", "blue");
+            }
+        }
+    }
+
+
+
+
+    // ---------------------------------------------------- document ready function
+    $( document ).ready(function() {
+        console.log("\nready!" );
+
+
+        // - enable actions
+        $('body').on('click', '[data-ma-action]', function(e) {
+            e.preventDefault();
+            var $this = $(this); 
+            var action = $(this).data('ma-action');
+            console.log("data-ma-action:start = " + action );
+            switch(action) {
+                // - clear lines
+                case "clear-all-lines": 
+                    svg.selectAll("line").remove();
+                    console.log(d3.select('#svg').selectAll("path") );
+                    break;
+                case "draw-all-lines":
+                    connect();
+                    berak;
+                    
+            }
+            console.log("data-ma-action:end = " + action);
+
+        });
+
+        // - draw the nodes
+        draw_nodes();
+        console.log("image count: " + svg.selectAll("image").size() );
+        console.log("sat image count: " + svg.selectAll("image#sat").size() );
+        console.log("cjcsan image count: " + svg.selectAll("image.cjcsan").size() );
+
+
+        // - draw the lines 
+        //connect();
+        console.log("sat");
+        console.log(   newNodeData['sat'] );
+
+        console.log("ONE -------------------");
+        for (k in  Object.keys(newNodeData)  ) { console.log( Object.keys(newNodeData)[ k]  ); }
+        console.log("TWO -------------------");
+        Object.keys(newNodeData).forEach( function(k, i) { console.log( k); });
+
+
+
+    });
+
+</script>
+</html>
+
