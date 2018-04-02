@@ -12,11 +12,9 @@
             "height": 64,
             "midx": 777,
             "midy": 95,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
-            "crypto": {
-                "kiv7": [ "gep", "sat" ],
-                "kgv":  [ "ssbn", "ssbn2" ],
-            }
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'ssbn', 'ssbn2', 'gep', 'sat'],
+
           },
           "ssbn": {
             "name": "ssbn",
@@ -26,12 +24,10 @@
             "height": 64,
             "midx": 1208,
             "midy": 270,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
-            "crypto": {
-                "kgv": [ "tacamo", ]
-            }
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'tacamo' ],
           },
-          "ssbnr2": {
+          "ssbn2": {
             "name": "ssbn2",
             "system": "ssbn",
             "img": "assets/icons/ssbn.png",
@@ -39,10 +35,8 @@
             "height": 64,
             "midx": 1208,
             "midy": 430,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
-            "crypto": {
-                "kgv": [ "tacamo", ]
-            }
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'tacamo' ],
           },
           "gep": {
             "name": "gep",
@@ -52,10 +46,8 @@
             "img": "assets/icons/gep.png",
             "midx": 45,
             "midy": 350,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
-            "crypto": {
-                "kiv7": [ "tacamo", ],
-            }
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'tacamo', 'whitehouse', 'pentagon' ],
           },
           "sat": {
             "name": "sat",
@@ -65,7 +57,8 @@
             "height": 64,
             "midx": 47,
             "midy": 31,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'tacamo' ],
           },
           "pentagon": {
             "name": "pentagon",
@@ -75,7 +68,8 @@
             "height": 64,
             "midx": 502,
             "midy": 430,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'gep' ],
           },
           "whitehouse": {
             "name": "whitehouse",
@@ -85,9 +79,11 @@
             "img": "assets/icons/whitehouse.png",
             "midx": 720,
             "midy": 494,
-            "archs": [ "curpeace", "futpeace", "futposthab" ],
+            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "talksto": [ 'gep' ],
           }
     };
+
     <!-- end of master node dict -->
     // nodeData
 
