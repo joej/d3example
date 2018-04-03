@@ -27,15 +27,15 @@
             "archs": [ "curpeace", "futpeace", "posthab" ],
             "talksto": [ 'tacamo' ],
           },
-          "ssbn2": {
-            "name": "ssbn2",
+          "SSBN2": {
+            "name": "SSBN2",
             "system": "ssbn",
             "img": "assets/icons/ssbn.png",
             "width": 181,
             "height": 64,
             "midx": 1208,
             "midy": 430,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
+            "archs": [ "posthab" ],
             "talksto": [ 'tacamo' ],
           },
           "gep": {
@@ -84,6 +84,11 @@
           }
     };
 
+    var architectures = {
+        "curpeace" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse" ],
+        "futpeace" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse" ],
+        "posthab" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse", "SSBN2" ]
+    };
     <!-- end of master node dict -->
     // nodeData
 
