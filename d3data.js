@@ -12,7 +12,6 @@
             "height": 64,
             "midx": 777,
             "midy": 95,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
             "talksto": [ 'ssbn', 'ssbn2', 'gep', 'sat'],
 
           },
@@ -24,18 +23,16 @@
             "height": 64,
             "midx": 1208,
             "midy": 270,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
             "talksto": [ 'tacamo' ],
           },
-          "SSBN2": {
-            "name": "SSBN2",
+          "ssbn2": {
+            "name": "ssbn2",
             "system": "ssbn",
             "img": "assets/icons/ssbn.png",
             "width": 181,
             "height": 64,
             "midx": 1208,
             "midy": 430,
-            "archs": [ "posthab" ],
             "talksto": [ 'tacamo' ],
           },
           "gep": {
@@ -46,8 +43,7 @@
             "img": "assets/icons/gep.png",
             "midx": 45,
             "midy": 350,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
-            "talksto": [ 'tacamo', 'whitehouse', 'pentagon' ],
+            "talksto": [ 'tacamo', 'whitehouse', 'pentagon', 'sat'],
           },
           "sat": {
             "name": "sat",
@@ -57,8 +53,7 @@
             "height": 64,
             "midx": 47,
             "midy": 31,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
-            "talksto": [ 'tacamo' ],
+            "talksto": [ 'tacamo', 'gep' ],
           },
           "pentagon": {
             "name": "pentagon",
@@ -68,7 +63,6 @@
             "height": 64,
             "midx": 502,
             "midy": 430,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
             "talksto": [ 'gep' ],
           },
           "whitehouse": {
@@ -79,18 +73,51 @@
             "img": "assets/icons/whitehouse.png",
             "midx": 720,
             "midy": 494,
-            "archs": [ "curpeace", "futpeace", "posthab" ],
             "talksto": [ 'gep' ],
           }
     };
-
+    <!-- end of master node dict -->
+    // nodeData
+    //
     var architectures = {
         "curpeace" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse" ],
         "futpeace" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse" ],
-        "posthab" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse", "SSBN2" ]
+        "posthab" :  [ "tacamo", "ssbn", "gep", "sat", "pentagon", "whitehouse", "ssbn2" ]
     };
-    <!-- end of master node dict -->
-    // nodeData
+
+
+    function calc_line_data() {
+        // - pull out line-specific data
+        var ret_array = [];
+
+        for (i in newNodeData) {
+            tempd = [];
+            src = newNodeData[i];
+            for (j in src.talksto) {
+
+                peernm = src.talksto[j];
+
+                dst = newNodeData[peernm];
+
+                //console.log(i, j, peernm, typeof dst);
+
+                tempd = {
+                    'id': i + "-" + src.talksto[j],
+                    'src': i,
+                    'x1': src['midx'],
+                    'y1': src['midy'],
+
+                    'dst': peernm,
+                    'x2': dst['midx'],
+                    'y2': dst['midy'],
+                }
+            }
+            ret_array.push( tempd);
+        }
+        return ret_array;
+    };
+
+
 
     function farthestX() {
         var maxX = 0;
