@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Example 6</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/jquery-ui.css">
+    <link rel="stylesheet" href="assets/css/simple-sidebar.css">
+
+
+
+
+</head>
+<body>
+    <div id="wrapper" class="toggled">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">Example Diagram</li>
+                <li class="sidebar-brand"><a href="#">Example Diagram</a></li>
+
+                <li><h4>Debug:</h4></li>
+                <li>
+                    <div class="btn-group">
+                        <button class="btn btn-default" type="button"
+                            data-ma-action="clear-lines">Clear</button>
+                        <button class="btn btn-primary" type="button"
+                            data-ma-action="show-lines">Show</button>
+                    </div>
+                </li>
+
+                <li>
+                    <h4>Architectures</h4>
+                    <select id="architectures" style="margin-left: 20px">
+                        <option value="All">All</option>
+                    </select>
+                </li>
+                <li>
+                    <h4>Individual Systems:</h4>
+                    <select id="systems" style="margin-left: 20px">
+                        <option value="All">All</option>
+                    </select>
+                </li>
+                <!-- LATER ... add this third collection/choice 
+                <li class="navbar-form">Specific Nodes:
+                    <select id="names" style="margin-left: 20px">
+                        <option value="All">All</option>
+                    </select>
+                </li>
+                -->
+            </ul>
+        </div> <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+            <h2>Diagram</h2>
+            <svg id="svg"></svg>
+        </div> <!-- /#page-content-wrapper -->
+    </div> <!-- /#wrapper -->
+
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/d3.js"></script>
+
+    <script src="d3data.js"></script>
+    <script src="example_6.js"></script>
+</body>
+</html>
+

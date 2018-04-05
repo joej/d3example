@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Example 5</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/jquery-ui.css">
+
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-ui.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/d3.js"></script>
+
+    <!-- pull in node data FIRST -->
+    <script src="d3data.js"></script>
+
+
+    <!-- link rel="stylesheet" type="text/css" href="example.css" -->
+    <link rel="stylesheet" type="text/css" href="assets/css/simple-sidebar.css" >
+</head>
+<body>
+ <div id="wrapper" class="toggled">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Crypto
+                    </a>
+                </li>
+
+                <li>
+                    <span class="btn-group">
+                    <button class="btn btn-default" role="button"   
+                        data-ma-action="clear-lines">Clear</button>
+                    <button class="btn btn-primary" role="button"
+                        data-ma-action="show-lines">Show</button>
+                    </span>
+                </li>
+                <li><h4>Choose:</h4></li>
+                <li>Arch
+                    <select id="architectures">
+                        <option value="All">All</option>
+                    </select>
+                <li>Systems:
+                    <select id="systems">
+                        <option value="All">All</option>
+                    </select>
+
+                </li>
+            </ul>
+        </div> <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+            <h2>Diagram</h2>
+            <svg id="svg" height="500px" width="300px"> <!-- height=300 width=300></svg> -->
+
+        </div> <!-- /#page-content-wrapper -->
+    </div> <!-- /#wrapper -->
+
+    <!-- pull in d3 code NEXT -->
+    <script src="example_5.js"></script>
+</body>
+</html>
+
