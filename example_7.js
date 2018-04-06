@@ -27,6 +27,8 @@
     var glines;
 
     var gX, gY;
+    var gArchitecture = 'All';
+    var gSystem = 'All';
 
 
     // - unique-ify an array
@@ -152,28 +154,52 @@
     }
 
     function handlemouseover(d, i) {
-        console.log('mouseover ' + d3.select(this).attr('id')  );
+        idstr = d3.select(this).attr('id');
+        console.log('mouseover ' + idstr );
+
         d3.select(this).selectAll('image').classed('hovered', true);
         d3.select(this).selectAll('text').classed('hovered', true);
+
+        line_layer.selectAll('line.'+idstr)
+            .style('stroke', 'gray')
+            .style('stroke-width', 2);
 
     }
     function handlemouseout(d, i) {
         console.log('mouseout ' + d3.select(this).attr('id')  );
         d3.select(this).selectAll('image').classed('hovered', false);
         d3.select(this).selectAll('text').classed('hovered', false);
+
+        line_layer.selectAll('line.'+idstr)
+            .style('stroke', 'black')
+            .style('stroke-width', 1);
     }
+
     // ---------------------------------------------------- document ready function
     $( document ).ready(function() {
         console.log("document.ready!\n\n" );
 
 
+        // - button does not exist on our page ;-)
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
 
-        // - resize
+        // - EVENTS
+        // -- resize
         $(window).resize(function() { resize_svg( svg ); });
+        $('select#architectures').on('change', function() {
+            gArchitecture = $('select#architectures :selected').val();
+            show_hide_lines(arch=gArchitecture, system=gSystem);
+            console.log("architecture change!");
+        });
+        $('select#systems').on('change', function() {
+            gSystem = $('select#systems :selected').val();
+            show_hide_lines(arch=gArchitecture, system=gSystem);
+            console.log("system change!");
+        });
+
 
 
         // - enable HTML / JS actions
@@ -188,9 +214,7 @@
                     break;
 
                 case "show-lines":
-                    var selected_arch = $('select#architectures :selected').val();
-                    var selected_system = $('select#systems :selected').val();
-                    show_hide_lines( arch=selected_arch, system=selected_system);
+                    show_hide_lines( arch=gArchitecture, system=gSystem);
                     break;
             }
             console.log("data-ma-action:end = " + action);

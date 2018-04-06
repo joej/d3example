@@ -125,21 +125,12 @@ ul.sidebar-nav li.sidebar-brand,
 }
 // - misc for joe
 // ----------------------------------------------
-# svg .selected { 
-    background-color: #ddd;
-    color: #000;
-}
-#svg text.selected {
-    font-weight: bold;
-}
-
 #svg text.hovered { 
     font-weight: bold;
     color: #5d8aa8;         // af blue
     background-color: #fff; // white
 }
-#svg image.hovered {
-    opacity: .5;
-}
+#svg image.hovered { opacity: .5; }
+#svg line.hovered { stroke: red; }
 
 
