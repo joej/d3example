@@ -15,17 +15,18 @@
 
     // - data
     var d3_node_data = convert_my_data(newNodeData);   // array of dicts
-    var newLineData = calc_line_data();
+    var newLineData = [];
 
     // global vars
     var svg = d3.select("svg#svg");
 
-    var plot_layer = svg.append("g").attr("id", "plot-layer").attr("transform", "translate(0,0)" );
+    var plot_layer; // = svg.append("g").attr("id", "plot-layer").attr("transform", "translate(0,0)" );
     var gnodes;
 
-    var line_layer = svg.append("g").attr("id", "line-layer").attr("transform", "translate(0,0)" );
+    var line_layer; // = svg.append("g").attr("id", "line-layer").attr("transform", "translate(0,0)" );
     var glines;
 
+    // global flags, controls
     var gX, gY;
     var gArchitecture = 'All';
     var gSystem = 'All';
@@ -40,29 +41,42 @@
         return result;
     }
 
+    function hide_svg() {
+        line_layer.selectAll('line').style('opacity', 0);
+        plot_layer.selectAll('image').style('opacity', 0);
+        plot_layer.selectAll('text').style('opacity', 0);
+    }
+
 
     // - loop lines, show / hide where necessary
-    function show_hide_lines(arch, system) {
+    function show_svg() {
+
+        arch = gArchitecture;
+        system = gSystem;
+
 
         if (arch == 'All') {
 
-            line_layer.selectAll('line')
-                .style('opacity', 1)
-                .style('stroke', 'black');
 
-            plot_layer.selectAll('g')
+            line_layer.selectAll('line')
+                .style('stroke', 'black')
                 .style('opacity', 1);
+            plot_layer.selectAll('image').style('opacity', 1);
+            plot_layer.selectAll('text').style('opacity', 1);
+
         } else {
 
             line_layer.selectAll('line')
-                .style('opacity', 0).style('stroke', 'black');
+                .style('opacity', 0);
+            line_layer.selectAll('line.' + arch)
+                .style('opacity', 1).style('stroke', 'blue');
 
-            line_layer.selectAll('.' + arch)
-                .style('opacity', 1)
-                .style('stroke', 'black');
+            plot_layer.selectAll('image').style('opacity', 0.5);
+            plot_layer.selectAll('image.' + arch).style('opacity', 1);
 
-            plot_layer.selectAll('g')
-                .style('opacity', 1);
+            plot_layer.selectAll('text').style('opacity', 0.5);
+            plot_layer.selectAll('text.' + arch).style('opacity', 1);
+
         }
     }
 
@@ -75,20 +89,81 @@
     }
 
     function window_resize(s) {
-        s.attr("height", "600px")
-            .attr("width", $("#page-content-wrapper").width() ) // -- fit to the bootstrap col width
-            .attr("top", $("#page-content-wrapper").top )       // -- locate at 0,0 of bootstrap col
-            .attr("left", $("#page-content-wrapper").left )     // -- locate at 0,0 of bootstrap col
+        s.attr("top", $("#page-content-wrapper").top )
+            .attr("left", $("#page-content-wrapper").left )
+            //.attr("height", "600px")
+            //.attr("width", $("#page-content-wrapper").width() )
             .style("position", "absolute")
+            .attr('viewBox', "0 0 1304 600")
             .style("background-color", "ivory");
     }
+
+    // - calculate lines
+    function calc_line_data() {
+        // - pull out line-specific data
+        var ret_array = [];
+
+        for (i in newNodeData) {
+            tempd = [];
+            src = newNodeData[i];
+            for (j in src.talksto) {
+                peernm = src.talksto[j];        // name of comms-peer system
+                dst = newNodeData[peernm];      // peer's data
+
+                idstr = i + "-" + peernm;
+                tempd = {
+                    'id': idstr,
+                    'src': i,
+                    //
+                    'x1': src['midx'],
+                    'y1': src['midy'],
+
+                    'dst': peernm,
+                    'x2': dst['midx'],
+                    'y2': dst['midy'],
+                    'archs': [],
+                }
+                for (arch in architectures) {
+                    if ( (architectures[arch].indexOf(i) >= 0) &&
+                        (architectures[arch].indexOf(peernm) >= 0) ){
+                        //console.log(i + '-' + peernm + " adds " + arch);
+                        tempd.archs.push( arch);
+                    }
+                    //else { console.log(i + '-' + peernm + " NOT " + arch); }
+                } // arch in archs
+
+
+            }
+            ret_array.push( tempd);
+        }
+        return ret_array;
+    };
+
 
     // - convert our dict of dicts into array of dicts
     function convert_my_data(dict_of_dicts) {
         var array_of_dicts = [];
+
+
         for (i in dict_of_dicts) {
+
+            // - alter the dict into obj-dict
             obj = dict_of_dicts[i];
             obj['id'] = i;  // id is the key/name field
+            obj['archs'] = [];
+
+
+            // - add 'archs'
+            for (arch in architectures) {
+                if (architectures[arch].indexOf(i) >= 0) {
+                    obj['archs'].push( arch);
+                    console.log('data ... ' + i + " gets " + arch);
+                } else {
+                    console.log('data ... ' + i + " NOT " + arch);
+                }
+            } // arch in archs
+            console.log("So: archs for '" + i + "' is = '" + obj['archs'] + "'" );
+
             array_of_dicts.push( obj);
         }
         return array_of_dicts;
@@ -161,8 +236,8 @@
         d3.select(this).selectAll('text').classed('hovered', true);
 
         line_layer.selectAll('line.'+idstr)
-            .style('stroke', 'gray')
-            .style('stroke-width', 2);
+            .style('stroke', 'blue')
+            .style('stroke-width', 3);
 
     }
     function handlemouseout(d, i) {
@@ -175,63 +250,60 @@
             .style('stroke-width', 1);
     }
 
-    // ---------------------------------------------------- document ready function
-    $( document ).ready(function() {
-        console.log("document.ready!\n\n" );
 
 
-        // - button does not exist on our page ;-)
-        $("#menu-toggle").click(function(e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
+    function remove_svg() {
+        svg.selectAll("*").remove();
+        svg = d3.select("svg#svg");
+    }
 
-        // - EVENTS
-        // -- resize
-        $(window).resize(function() { resize_svg( svg ); });
-        $('select#architectures').on('change', function() {
-            gArchitecture = $('select#architectures :selected').val();
-            show_hide_lines(arch=gArchitecture, system=gSystem);
-            console.log("architecture change!");
-        });
-        $('select#systems').on('change', function() {
-            gSystem = $('select#systems :selected').val();
-            show_hide_lines(arch=gArchitecture, system=gSystem);
-            console.log("system change!");
-        });
+    function update_svg() {
+        console.log("BEFORE update: ------------------------------------");
+        console.log("line = "  + d3.selectAll('line').size() );
+        console.log("g = "     + d3.selectAll('g').size() );
+        console.log("text = "  + d3.selectAll('text').size() );
+        console.log("image = " + d3.selectAll('image').size() );
 
 
+        // - resize it
+        svg.attr('viewBox', "0 0 1304 600")
+            //.attr("height", "600px")
+            //.attr("width", $("#page-content-wrapper").width() )
+            .attr("top", $("#page-content-wrapper").top )                  // -- locate at 0,0 of bootstrap col
+            .attr("left", $("#page-content-wrapper").left )                // -- locate at 0,0 of bootstrap col
+            .style("background-color", "ivory")
+            .style("position", "absolute");
 
-        // - enable HTML / JS actions
-        $('[data-ma-action]').on("click", function(e) {
-            e.preventDefault();
-            var $this = $(this);
-            var action = $(this).data('ma-action');
-            console.log("data-ma-action:start = " + action );
-            switch(action) {
-                case "clear-lines":
-                    line_layer.selectAll('line').style('opacity', 0);
-                    break;
+        // - this creates the g, lines, images !
+        remove_svg();
+        draw_svg();
 
-                case "show-lines":
-                    show_hide_lines( arch=gArchitecture, system=gSystem);
-                    break;
-            }
-            console.log("data-ma-action:end = " + action);
+        console.log("AFTER update: ------------------------------------");
+        console.log("line = "  + d3.selectAll('line').size() );
+        console.log("g = "     + d3.selectAll('g').size() );
+        console.log("text = "  + d3.selectAll('text').size() );
+        console.log("image = " + d3.selectAll('image').size() );
+    }
 
-        });
-
-
+    function draw_svg() {
         // ----------------------------------------------- D3
 
-        svg.attr("height", "600px")
-            .attr("width", $("#page-content-wrapper").width() )            // -- fit to the bootstrap col width
+        svg = d3.select("svg#svg");
+        console.log("draw: svg = " + svg);
+
+        svg.attr('viewBox', "0 0 1304 600")
+            //.attr("height", "600px")
+            //.attr("width", $("#page-content-wrapper").width() )            // -- fit to the bootstrap col width
             .attr("top", $("#page-content-wrapper").top )                  // -- locate at 0,0 of bootstrap col
             .attr("left", $("#page-content-wrapper").left )                // -- locate at 0,0 of bootstrap col
             .style("background-color", "ivory")
             .style("position", "absolute");
 
         // - draw all lines
+        newLineData = calc_line_data(); // update line data
+        console.log("draw: newLineData = '", newLineData );
+
+        line_layer = svg.append("g").attr("id", "line-layer").attr("transform", "translate(0,0)" );
         glines = line_layer.selectAll('line')
             .data(newLineData)
             .enter().append('line')
@@ -246,13 +318,12 @@
             .attr("data-systems", function(d) { return [d.src, d.dst] } )
             .attr("data-archs", function(d){ return d.archs })
             .attr("class", function(d) { return d.src + ' ' + d.dst + " " + d.archs.join(" ") });
-
-        glines.each(function(d, i) {
-            console.log(d.id, d.archs);
-            //d3.select(d).classed(arch, true);
-        });
+        console.log("draw: line_layer = '" + line_layer.size() + "'");
+        console.log("draw: glines = '" + glines.size() + "'");
 
         // -- attach the data, create the IMAGE/TEXT groups
+        d3_node_data = convert_my_data(newNodeData);   // update nodes data
+        plot_layer = svg.append("g").attr("id", "plot-layer").attr("transform", "translate(0,0)" );
         gnodes = plot_layer.selectAll('g')
             .data(d3_node_data)
             .enter().append('g')
@@ -263,15 +334,25 @@
                 .on("drag", dragged)
                 .on("end", dragended)
             );
+        console.log("draw: plot_layer = '" + plot_layer.size() + "'");
 
         // - draw icons
         gnodes.append("image")
             .attr("xlink:href", function(d) { return d.img } )
-            .attr("x", function(d) { return d.midx - (d.width/2) } )
+
+            .attr('height', function(d) { return d.height })
+            .attr('width', function(d) { return d.width })
+
+
+            .attr("x", function(d) { return d.midx - (d.width/2)  } )
             .attr("y", function(d) { return d.midy - (d.height/2) } )
             .attr('midx', function(d) { return d.midx })
             .attr('midy', function(d) { return d.midy })
+            .attr("data-archs", function(d){ return d.archs })
+            .attr("class", function(d) { return d.archs.join(" ") })
+
             .attr("id", function(d) { return d.id} );
+        console.log("draw: gnodes img = '" + svg.selectAll('image').size() + "'");
 
         // - draw text labels
         gnodes.append("text")
@@ -279,6 +360,7 @@
             .attr("y", function(d) { return d.midy + d.height - text_adj } )
             .text( function(d) { return d.id } )
             .style("text-anchor", "middle");
+        console.log("draw: gnodes txt = '" + svg.selectAll('text').size() + "'");
 
 
         // - add mouse events to image/text groups
@@ -288,7 +370,74 @@
             .on("click", clickednode )              // click
 
         // ----------------------------------------------- D3
+    } // - draw_svg
+    // ---------------------------------------------------- document ready function
+    $( document ).ready(function() {
+        console.log("document.ready!\n\n" );
 
+
+        // - button does not exist on our page ;-)
+        $("#menu-toggle").click(function(e) {
+
+            e.preventDefault();
+            //$(this).html('<i class="glyphicon glyphicon-menu-right"></i>');
+
+            $(this).find('i.glyphicon')
+                .toggleClass('glyphicon-chevron-left')
+                .toggleClass('glyphicon-chevron-right');
+
+            $("#wrapper").toggleClass("toggled");
+
+        });
+
+        // - EVENTS
+        // -- resize
+        $(window).resize(function() { resize_svg( svg ); });
+        // -- architectures
+        $('select#architectures').on('change', function() {
+            gArchitecture = $('select#architectures :selected').val();
+            show_svg();
+        });
+        // -- systems
+        $('select#systems').on('change', function() {
+            gSystem = $('select#systems :selected').val();
+            remove_svg();
+            update_svg();
+        });
+
+        // - enable HTML / JS actions
+        $('[data-ma-action]').on("click", function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var action = $(this).data('ma-action');
+            console.log("data-ma-action:start = " + action );
+            switch(action) {
+
+                case 'svg-remove':
+                    remove_svg();
+                    break;
+
+                case 'svg-update':
+                    update_svg();
+                    break;
+
+                case "svg-hide":
+                    hide_svg();
+                    break;
+
+                case "svg-show":
+                    show_svg();
+                    break;
+            }
+            console.log("data-ma-action:end = " + action);
+
+        });
+
+        // -- plot out plot_layer and line_layer sets of objects on the svg
+        // ----------------------------------------------------------------
+        draw_svg();
+
+        // ----------------------------------------------------------------
 
         // - HTML, bootstrap ----------
         var archnames = {

@@ -86,47 +86,6 @@
     };
 
 
-    function calc_line_data() {
-        // - pull out line-specific data
-        var ret_array = [];
-
-        for (i in newNodeData) {
-            tempd = [];
-            src = newNodeData[i];
-            for (j in src.talksto) {
-                peernm = src.talksto[j];        // name of comms-peer system
-                dst = newNodeData[peernm];      // peer's data
-
-
-                idstr = i + "-" + peernm;
-                tempd = {
-                    'id': idstr,
-                    'src': i,
-                    'x1': src['midx'],
-                    'y1': src['midy'],
-                    'dst': peernm,
-                    'x2': dst['midx'],
-                    'y2': dst['midy'],
-                    'archs': [],
-                }
-                for (arch in architectures) {
-                    if ( (architectures[arch].indexOf(i) >= 0) &&
-                        (architectures[arch].indexOf(peernm) >= 0) ){
-                        //console.log(i + '-' + peernm + " adds " + arch);
-                        tempd.archs.push( arch);
-                    }
-                    //else { console.log(i + '-' + peernm + " NOT " + arch); }
-                } // arch in arches
-
-
-            }
-            ret_array.push( tempd);
-        }
-        return ret_array;
-    };
-
-
-
     function farthestX() {
         var maxX = 0;
         Object.keys(newNodeData).forEach(function(k,i) {

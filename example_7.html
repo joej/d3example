@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
+<!-- <link
+     href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet"> -->
+
 
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/css/jquery-ui.css">
     <link rel="stylesheet" href="assets/css/simple-sidebar.css">
-
-
-
-
 </head>
 <body>
     <div id="wrapper" class="toggled">
@@ -22,16 +21,28 @@
         <div id="sidebar-wrapper">
 
             <ul class="sidebar-nav">
-                <li class="sidebar-brand">Example Diagram</li>
-                <li class="sidebar-brand"><a href="#">Example Diagram</a></li>
+                <li class="sidebar-brand"><img src="assets/icons/nuclear.png"> Example</li>
 
-                <li><h4>Debug:</h4></li>
+                <!-- <li class="sidebar-brand"><a href="#">Example
+                    Diagram</a></li> -->
+
                 <li>
+                    <h4>Debug controls:</h4>
                     <div class="btn-group">
-                        <button class="btn btn-default" type="button"
-                            data-ma-action="clear-lines">Clear</button>
-                        <button class="btn btn-primary" type="button"
-                            data-ma-action="show-lines">Show</button>
+                        <button class="btn btn-xs btn-primary" type="button"
+                            data-ma-action="svg-show">
+                            <span class="glyphicon glyphicon-eye-open"></span> Show</button>
+                        <button class="btn btn-xs btn-default" type="button"
+                            data-ma-action="svg-hide">
+                            <span class="glyphicon glyphicon-eye-close"></span> Hide</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-xs btn-primary" type="button"
+                            data-ma-action="svg-update">
+                            <span class="glyphicon glyphicon-pencil"></span> Redraw</button>
+                        <button class="btn btn-xs btn-default" type="button"
+                            data-ma-action="svg-remove">
+                            <span class="glyphicon glyphicon-remove"></span> Remove</button>
                     </div>
                 </li>
 
@@ -41,13 +52,15 @@
                         <option value="All">All</option>
                     </select>
                 </li>
+
+                <!-- LATER ... add this third collection/choice 
                 <li>
-                    <h4>Individual Systems:</h4>
+                    <h4>Systems:</h4>
                     <select id="systems" style="margin-left: 20px">
                         <option value="All">All</option>
                     </select>
                 </li>
-                <!-- LATER ... add this third collection/choice 
+
                 <li class="navbar-form">Specific Nodes:
                     <select id="names" style="margin-left: 20px">
                         <option value="All">All</option>
@@ -60,7 +73,10 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
-            <h2>Diagram</h2>
+
+
+            <h2><small><a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle"><i class="glyphicon glyphicon-chevron-left"></i></a></small> Diagram</h2>
+
             <svg id="svg"></svg>
         </div> <!-- /#page-content-wrapper -->
     </div> <!-- /#wrapper -->
